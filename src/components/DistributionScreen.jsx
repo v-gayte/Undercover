@@ -41,8 +41,11 @@ const DistributionScreen = ({ players, onDistributionComplete }) => {
             onPointerDown={() => { setShowRole(true); setHasSeenRole(true); }}
             onPointerUp={() => setShowRole(false)}
             onPointerLeave={() => setShowRole(false)}
+            onTouchStart={() => { setShowRole(true); setHasSeenRole(true); }}
+            onTouchEnd={() => setShowRole(false)}
+            onContextMenu={(e) => e.preventDefault()}
             onClick={handleToggleRole}
-            className={`w-full aspect-square rounded-3xl flex flex-col items-center justify-center space-y-6 transition-all duration-300 ${
+            className={`w-full aspect-square rounded-3xl flex flex-col items-center justify-center space-y-6 transition-all duration-300 select-none touch-none ${
               showRole 
                 ? 'bg-white text-black scale-105 shadow-[0_0_40px_rgba(255,255,255,0.3)]' 
                 : 'bg-[var(--color-dark-card)] border-2 border-gray-700 text-white hover:border-gray-500'
