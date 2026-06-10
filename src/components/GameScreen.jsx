@@ -5,6 +5,14 @@ const GameScreen = ({ players, onEliminatePlayer, onProceedAfterReveal }) => {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [eliminatedReveal, setEliminatedReveal] = useState(null);
 
+  const [startingPlayer] = useState(() => {
+    const validPlayers = players.filter(p => p.role !== 'Mr. White');
+    if (validPlayers.length > 0) {
+      return validPlayers[Math.floor(Math.random() * validPlayers.length)];
+    }
+    return players[0];
+  });
+
   const alivePlayers = players.filter(p => p.isAlive);
 
   const handleEliminateClick = (player) => {
@@ -13,6 +21,10 @@ const GameScreen = ({ players, onEliminatePlayer, onProceedAfterReveal }) => {
 
   const confirmElimination = () => {
     if (selectedPlayer) {
+      if (selectedPlayer.role === 'Civil') {
+        const audio = new Audio('/civil-eliminated.mp3');
+        audio.play().catch(e => console.log('Audio play failed:', e));
+      }
       setEliminatedReveal(selectedPlayer);
       onEliminatePlayer(selectedPlayer.id);
       setSelectedPlayer(null);
@@ -31,6 +43,14 @@ const GameScreen = ({ players, onEliminatePlayer, onProceedAfterReveal }) => {
       <div className="text-center space-y-2 mb-8">
         <h2 className="text-2xl font-bold text-white">Plateau de Jeu</h2>
         <p className="text-gray-400 text-sm">Discutez, votez et éliminez un joueur</p>
+        
+        {alivePlayers.length === players.length && startingPlayer && (
+          <div className="mt-4 inline-block bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/50 px-4 py-2 rounded-xl animate-in fade-in slide-in-from-top-4 duration-500">
+            <p className="text-[var(--color-primary)] font-bold text-sm">
+              🎯 <span className="uppercase text-white">{startingPlayer.name}</span> commence la partie !
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto">
